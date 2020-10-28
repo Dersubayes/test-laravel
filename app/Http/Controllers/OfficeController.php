@@ -12,19 +12,18 @@ class OfficeController extends Controller
     
     public function index()
     {
+        if ($office = Redis::get('offices.all')) {
+            return json_decode($office);
+        }
+        // store into redis
+        Redis::set('offices.all', Office::all());
+        // return all posts
         return Office::all();
     }
  
     public function show(Office $office)
     {
-    // redis has office.all key exists 
-    // if office found then it will return all office without touching the database
-    if ($office = Redis::get('office.all')) {
-        return json_decode($office);
-    }
-    // store into redis
-    Redis::set('office.all', $office);
-    // return all posts
+    
     return $office;
         
     }
